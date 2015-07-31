@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+</style>
+<body>
+<script src="http://js.arcgis.com/3.14/"></script>
+<script>
+     
+	var app;
+	console.log(app);
+	
+	require(["dojo/dom",
+		"dojo/_base/array",
+		"esri/layers/FeatureLayer",
+		"esri/tasks/Geoprocessor",
+	],
+	function(
+		dom, 
+		array, 
+		FeatureLayer, 
+		Geoprocessor){
+			var gpServiceUrl= "https://yourserver/ppc_export2excel/GPServer/Table%20To%20Excel";
+			//parser.parse();
+			console.log(gpServiceUrl);
+			var gp = new Geoprocessor(gpServiceUrl);
+			console.log(gp);
+				
+			function findHotspot(){
+				//params of geoprocessing
+				var params = {
+					  "Input Table": "ICRC.ICRC.ICRC_PCP_EVENTS"
+				};
+				gp.submitJob( params,gpJobComplete, gpJobStatus, gpJobFailed);
+				
+			}
+				
+			function gpJobComplete(jobinfo){
+				//RESULT OF THE gp.submitJob Callback
+				console.log(jobinfo);
+			} 
+			function gpJobStatus(jobinfo){
+				var jobstatus = '';
+				console.log(jobstatus);
+				switch (jobinfo.jobStatus) {
+				  case 'esriJobSubmitted':
+					jobstatus = 'Submitted...';
+					console.log(jobstatus);
+					break;
+				  case 'esriJobExecuting':
+					jobstatus = 'Executing...';
+					console.log(jobstatus);
+					break;
+				  case 'esriJobSucceeded':
+					break;
+				}
+				console.log(jobstatus);
+			 }
+			  
+			function gpJobFailed(error){
+			console.log(error)
+			}
+			findHotspot();
+			 app = {
+				findHotspot: findHotspot
+			}; 
+		});
+
+</script>
